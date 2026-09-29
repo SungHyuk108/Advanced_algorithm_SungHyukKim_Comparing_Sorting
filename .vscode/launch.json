@@ -48,20 +48,12 @@
       ]
     },
     {
+      // 이 프로젝트에서 Python은 그래프 도구(tools/plot.py)에만 쓴다.
       "name": "Python 디버그 (현재 파일)",
       "type": "debugpy",
       "request": "launch",
       "program": "${file}",
       "cwd": "${fileDirname}",
-      "console": "integratedTerminal",
-      "justMyCode": true
-    },
-    {
-      "name": "Python 디버그 (src/main.py)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/src/main.py",
-      "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "justMyCode": true
     }
