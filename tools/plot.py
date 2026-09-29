@@ -14,6 +14,7 @@
     shapes-compares.svg          입력 모양별 비교 횟수 (로그)
     shapes-compares-linear.svg   같은 자료를 선형 축으로
     shapes-moves.svg             입력 모양별 이동 횟수 (선형)
+    shapes-depth.svg             입력 모양별 재귀 깊이 (로그)
 """
 
 import csv
@@ -322,8 +323,10 @@ def main():
     bar_chart(rows, "compares", "입력 모양별 비교 횟수" + at + " — 로그 축",
               "비교 횟수", "shapes-compares.svg", logscale=True)
 
-    # 재귀 깊이는 그리지 않는다. 입력 모양별로 값이 1 · 14 · 8192 세 가지뿐이라
-    # 막대로 옮겨도 표보다 읽히는 것이 없다.
+    # 재귀 깊이는 로그 축 한 장만. 값이 1 · 14 · 8192라 선형으로 그리면 퀵만
+    # 남고 병합의 14와 힙의 1이 둘 다 바닥선이 되어 구별되지 않는다.
+    bar_chart(rows, "depth", "입력 모양별 재귀 깊이" + at + " — 로그 축",
+              "재귀 깊이", "shapes-depth.svg", logscale=True)
 
     # 이동은 선형만. 값의 범위가 좁아 로그가 필요 없고, 무엇보다 퀵이 정렬된
     # 입력에서 기록하는 0회를 로그 축에는 그릴 자리가 없다.
