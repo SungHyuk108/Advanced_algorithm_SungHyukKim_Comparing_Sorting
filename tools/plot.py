@@ -179,8 +179,14 @@ def line_chart(rows, field, title, ylabel, path):
 def bar_chart(rows, field, title, ylabel, path, logscale=False):
     """입력 모양별로 묶어 세우는 막대. 같은 n에서 무엇이 달라지는지 본다.
 
-    퀵의 최악은 다른 값보다 수백 배 크다. 선형 축으로 그리면 나머지 막대가
-    바닥에 깔려 아무것도 안 보이므로 로그 축을 쓴다.
+    같은 자료를 선형과 로그 두 벌로 그린다. 하나로는 절반씩 놓치기 때문이다.
+
+      선형 — 격차의 크기를 보여 준다. 막대 높이가 곧 값의 비율이라, 퀵의 최악만
+             천장을 뚫고 나머지가 바닥에 깔리는 그림이 그대로 결론이 된다.
+             대신 작은 값끼리는 견줄 수 없다.
+      로그 — 작은 값도 자기 높이를 갖는다. 대신 눈금 한 칸이 10배라 630배의
+             격차가 두 칸 남짓으로 눌려 보인다. 그리고 0은 로그 축에 놓을
+             자리가 아예 없다 — 없는 것과 작은 것은 다르다.
     """
     kinds, data = [], {}
     for r in rows:
@@ -216,6 +222,24 @@ def bar_chart(rows, field, title, ylabel, path, logscale=False):
             return v / vmax * plot_h * 0.9
 
     out = header(title)
+
+    # 선형 축에는 눈금을 깐다. 그래야 막대 높이를 값으로 읽을 수 있다.
+    # 로그 축 쪽은 눈금 한 칸이 10배라 오히려 오해를 부르므로, 막대마다 적어
+    # 둔 숫자로 갈음한다.
+    if not logscale:
+        for f in (0.25, 0.5, 0.75, 1.0):
+            gy = py0 - f * plot_h * 0.9
+            tick = f * vmax
+            label = short(int(round(tick))) if isinstance(vmax, int) else short(tick)
+            out.append(
+                f'<line x1="{px0}" y1="{gy:.1f}" x2="{px1}" y2="{gy:.1f}" '
+                f'stroke="#e5e7eb" stroke-width="1"/>'
+            )
+            out.append(
+                f'<text x="{px0 - 8}" y="{gy + 4:.1f}" font-size="11" '
+                f'fill="#6b7280" text-anchor="end">{esc(label)}</text>'
+            )
+
     out += axes("입력 모양", ylabel + (" (로그축)" if logscale else ""))
 
     group_w = (px1 - px0) / len(kinds)
@@ -286,14 +310,26 @@ def main():
 
     n = shapes_n(rows)
     at = f" (n = {n})" if n else ""
+    # 시간은 로그만 그린다. 선형으로 그리면 바로 아래 비교 횟수 그림과 같은
+    # 모양이 되어 (퀵만 솟고 나머지는 바닥) 두 장을 실을 값이 없다.
     bar_chart(rows, "millis", "입력 모양별 실행 시간" + at, "시간 (ms)",
               "shapes-time.svg", logscale=True)
-    bar_chart(rows, "compares", "입력 모양별 비교 횟수" + at, "비교 횟수",
-              "shapes-compares.svg", logscale=True)
+
+    # 비교와 깊이는 두 벌씩. 퀵의 최악이 얼마나 압도적인지는 선형에서만 보이고,
+    # 나머지 둘을 서로 견주는 것은 로그에서만 된다.
+    bar_chart(rows, "compares", "입력 모양별 비교 횟수" + at + " — 선형 축",
+              "비교 횟수", "shapes-compares-linear.svg")
+    bar_chart(rows, "compares", "입력 모양별 비교 횟수" + at + " — 로그 축",
+              "비교 횟수", "shapes-compares.svg", logscale=True)
+    bar_chart(rows, "depth", "입력 모양별 재귀 깊이" + at + " — 선형 축",
+              "재귀 깊이", "shapes-depth-linear.svg")
+    bar_chart(rows, "depth", "입력 모양별 재귀 깊이" + at + " — 로그 축",
+              "재귀 깊이", "shapes-depth.svg", logscale=True)
+
+    # 이동은 선형만. 값의 범위가 좁아 로그가 필요 없고, 무엇보다 퀵이 정렬된
+    # 입력에서 기록하는 0회를 로그 축에는 그릴 자리가 없다.
     bar_chart(rows, "moves", "입력 모양별 이동 횟수" + at, "이동 횟수",
-              "shapes-moves.svg", logscale=True)
-    bar_chart(rows, "depth", "입력 모양별 재귀 깊이" + at, "재귀 깊이",
-              "shapes-depth.svg", logscale=True)
+              "shapes-moves.svg")
 
 
 if __name__ == "__main__":
