@@ -45,8 +45,8 @@ debug: src/main.debug.out
 # 테스트는 main.c를 빼고 링크해야 하므로 wildcard를 쓰지 않는다.
 SORT_SRC = src/sort.c src/mergeSort.c
 
-tests/test_sort.out: tests/test_sort.c $(SORT_SRC) src/sort.h
-	$(CC) $(CFLAGS) -Isrc -o $@ tests/test_sort.c $(SORT_SRC)
+tests/test_sort.out: tests/test_sort.c $(SORT_SRC) src/bench.c src/sort.h src/bench.h
+	$(CC) $(CFLAGS) -Isrc -o $@ tests/test_sort.c $(SORT_SRC) src/bench.c
 
 clean:
 	rm -f src/*.out tests/*.out

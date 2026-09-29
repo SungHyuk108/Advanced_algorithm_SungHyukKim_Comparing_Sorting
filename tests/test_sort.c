@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "bench.h"
 #include "sort.h"
 
 static int failures = 0;
@@ -80,6 +81,91 @@ static void testSortsCorrectly(void) {
     runCase(TWO, 2, "원소 둘");
     runCase(ONE, 1, "원소 하나");
     runCase(ONE, 0, "빈 배열");
+}
+
+/* 생성한 입력으로 크기를 바꿔 가며 본다.
+ * 손으로 쓴 배열은 경계(0, 1, 홀수 개)를 놓치기 쉽고, 큰 입력에서만 드러나는
+ * 실수도 있다. bench의 입력 생성기를 그대로 써서 측정과 같은 입력으로 시험한다. */
+static void testGeneratedInputs(void) {
+    static const size_t SIZES[] = {0, 1, 2, 3, 7, 64, 1000};
+    const size_t sizeCount = sizeof(SIZES) / sizeof(SIZES[0]);
+    int allOk = 1;
+
+    for (size_t k = 0; k < SORT_ALGORITHM_COUNT; k++) {
+        const SortAlgorithm *algo = &SORT_ALGORITHMS[k];
+
+        for (size_t s = 0; s < sizeCount; s++) {
+            size_t n = SIZES[s];
+            for (int kind = 0; kind < INPUT_KIND_COUNT; kind++) {
+                Record *a = (Record *)malloc((n + 1) * sizeof(Record));
+                int *expect = (int *)malloc((n + 1) * sizeof(int));
+                if (a == NULL || expect == NULL) {
+                    free(a);
+                    free(expect);
+                    check(0, "메모리 할당");
+                    return;
+                }
+
+                makeInput(a, n, (InputKind)kind, 12345u);
+                for (size_t i = 0; i < n; i++) {
+                    expect[i] = a[i].key;
+                }
+                bubbleSortKeys(expect, n);
+
+                SortStats st;
+                sortStatsReset(&st);
+                algo->sort(a, n, &st);
+
+                int ok = recordsSorted(a, n);
+                for (size_t i = 0; i < n; i++) {
+                    if (a[i].key != expect[i]) {
+                        ok = 0;
+                    }
+                }
+                if (!ok) {
+                    char what[160];
+                    snprintf(what, sizeof(what), "%s: %s n=%zu 에서 결과가 틀림", algo->name,
+                             inputKindName((InputKind)kind), n);
+                    check(0, what);
+                    allOk = 0;
+                }
+
+                free(a);
+                free(expect);
+            }
+        }
+    }
+
+    if (allOk) {
+        char what[128];
+        snprintf(what, sizeof(what), "생성 입력 %zu크기 x %d모양 x %zu정렬 모두 정확",
+                 sizeCount, (int)INPUT_KIND_COUNT, SORT_ALGORITHM_COUNT);
+        check(1, what);
+    }
+}
+
+/* 재귀 깊이가 이론과 맞는가.
+ * 병합은 입력과 무관하게 log n 급이다 — 정렬된 입력을 넣어도 변하지 않는다. */
+static void testDepth(void) {
+    const size_t n = 1000; /* log2(1000) < 10 이므로 깊이는 11을 넘지 않아야 한다 */
+    Record *a = (Record *)malloc(n * sizeof(Record));
+    SortStats st;
+    if (a == NULL) {
+        check(0, "메모리 할당");
+        return;
+    }
+
+    makeInput(a, n, INPUT_SORTED, 1u);
+    sortStatsReset(&st);
+    mergeSort(a, n, &st);
+    {
+        char what[128];
+        snprintf(what, sizeof(what), "merge: 정렬된 입력에서도 깊이가 log n 급 (측정 %zu)",
+                 st.maxDepth);
+        check(st.maxDepth <= 12, what);
+    }
+
+    free(a);
 }
 
 /* 구현 표가 주장한 안정성이 실제와 맞는가.
@@ -158,6 +244,8 @@ static void testLectureCounts(void) {
 int main(void) {
     printf("정렬 테스트\n");
     testSortsCorrectly();
+    testGeneratedInputs();
+    testDepth();
     testStabilityClaim();
     testLectureCounts();
 
