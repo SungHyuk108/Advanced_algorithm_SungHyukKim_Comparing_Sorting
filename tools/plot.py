@@ -29,7 +29,9 @@ COLORS = {"merge": "#1d4ed8", "quick": "#c2410c", "heap": "#15803d"}
 ORDER = ["merge", "quick", "heap"]
 
 W, H = 640, 400
-PAD_L, PAD_R, PAD_T, PAD_B = 78, 18, 40, 56
+# 그림 영역의 여백. 아래쪽이 넓은 것은 눈금·축 이름 밑에 범례가 한 줄 더
+# 들어가기 때문이다.
+PAD_L, PAD_R, PAD_T, PAD_B = 78, 18, 46, 78
 
 
 def load():
@@ -53,21 +55,31 @@ def header(title):
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
         f'viewBox="0 0 {W} {H}" font-family="sans-serif">',
         f'<rect width="{W}" height="{H}" fill="#ffffff"/>',
-        f'<text x="{PAD_L}" y="24" font-size="15" font-weight="600" '
-        f'fill="#111827">{esc(title)}</text>',
+        f'<text x="{W / 2}" y="27" font-size="15" font-weight="600" '
+        f'text-anchor="middle" fill="#111827">{esc(title)}</text>',
     ]
 
 
-def legend(names, x, y):
+def legend(names):
+    """범례는 그림 맨 아래 가운데에 가로로 깐다.
+
+    한 칸이 색 네모(11) + 사이(5) + 이름 이므로 step만큼 띄우고, 전체 너비를
+    재어 W의 가운데에 맞춘다."""
+    step = 80
+    width = (len(names) - 1) * step + 56
+    x0 = (W - width) / 2
+    y = H - 16
+
     out = []
     for i, name in enumerate(names):
-        cx = x + i * 92
+        cx = x0 + i * step
         out.append(
-            f'<rect x="{cx}" y="{y - 8}" width="11" height="11" rx="2" '
+            f'<rect x="{cx:.1f}" y="{y - 9}" width="11" height="11" rx="2" '
             f'fill="{COLORS[name]}"/>'
         )
         out.append(
-            f'<text x="{cx + 16}" y="{y + 1}" font-size="12" fill="#374151">{name}</text>'
+            f'<text x="{cx + 16:.1f}" y="{y}" font-size="12" '
+            f'fill="#374151">{name}</text>'
         )
     return out
 
@@ -78,7 +90,7 @@ def axes(xlabel, ylabel):
     return [
         f'<line x1="{x0}" y1="{y0}" x2="{x1}" y2="{y0}" stroke="#9ca3af" stroke-width="1"/>',
         f'<line x1="{x0}" y1="{y0}" x2="{x0}" y2="{y1}" stroke="#9ca3af" stroke-width="1"/>',
-        f'<text x="{(x0 + x1) / 2}" y="{H - 14}" font-size="12" fill="#6b7280" '
+        f'<text x="{(x0 + x1) / 2}" y="{y0 + 36}" font-size="12" fill="#6b7280" '
         f'text-anchor="middle">{esc(xlabel)}</text>',
         f'<text x="16" y="{(y0 + y1) / 2}" font-size="12" fill="#6b7280" '
         f'text-anchor="middle" transform="rotate(-90 16 {(y0 + y1) / 2})">'
@@ -159,7 +171,7 @@ def line_chart(rows, field, title, ylabel, path):
                     f'fill="{COLORS[name]}"/>'
                 )
 
-    out += legend([n for n in ORDER if n in data], px0, PAD_T - 14)
+    out += legend([n for n in ORDER if n in data])
     out.append("</svg>")
     write(path, out)
 
@@ -231,7 +243,7 @@ def bar_chart(rows, field, title, ylabel, path, logscale=False):
                 f'fill="#374151" text-anchor="middle">{esc(label)}</text>'
             )
 
-    out += legend(ORDER, px0, PAD_T - 14)
+    out += legend(ORDER)
     out.append("</svg>")
     write(path, out)
 
