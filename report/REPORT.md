@@ -6,7 +6,6 @@
 - 구현: [`src/mergeSort.c`](../src/mergeSort.c) · [`src/quickSort.c`](../src/quickSort.c) ·
   [`src/heapSort.c`](../src/heapSort.c)
 - 실행: `make run` 측정 표 · `make test` 유닛 테스트 · `make charts` 그래프 생성
-- 환경: 컨테이너, `gcc -std=c17 -Wall -Wextra -O2` (경고 0건)
 
 ---
 
