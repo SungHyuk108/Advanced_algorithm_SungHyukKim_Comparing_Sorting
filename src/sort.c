@@ -3,6 +3,8 @@
 
 const SortAlgorithm SORT_ALGORITHMS[] = {
     {"merge", "O(n log n)", "O(n log n)", "O(n log n)", "O(n)", 1, mergeSort},
+    {"quick", "O(n log n)", "O(n log n)", "O(n^2)", "O(log n)", 0, quickSort},
+    {"heap", "O(n log n)", "O(n log n)", "O(n log n)", "O(1)", 0, heapSort},
 };
 
 const size_t SORT_ALGORITHM_COUNT = sizeof(SORT_ALGORITHMS) / sizeof(SORT_ALGORITHMS[0]);
