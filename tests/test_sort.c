@@ -147,7 +147,8 @@ static void testGeneratedInputs(void) {
 /* 재귀 깊이가 이론과 맞는가.
  * 병합은 입력과 무관하게 log n 급이다 — 정렬된 입력을 넣어도 변하지 않는다. */
 static void testDepth(void) {
-    const size_t n = 1000; /* log2(1000) < 10 이므로 깊이는 11을 넘지 않아야 한다 */
+    /* log2(1000)은 10 남짓이므로 병합의 깊이는 11 정도다. 12로 여유를 둔다. */
+    const size_t n = 1000;
     Record *a = (Record *)malloc(n * sizeof(Record));
     SortStats st;
     if (a == NULL) {
