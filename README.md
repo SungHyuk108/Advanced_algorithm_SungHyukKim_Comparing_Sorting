@@ -1,152 +1,209 @@
-# 정렬 세 가지 비교 — 병합 · 퀵 · 힙
+# algorithm-env
 
-2026-2 **고급알고리즘**(SIT2001-01) 1차 과제. 김성혁.
+2026-2 **고급알고리즘**(SIT2001-01)의 **실습 환경 template**입니다.
+컴파일러와 Python이 들어 있는 컨테이너, `src`/`tests` 뼈대, 그리고 그것이
+실제로 도는지 보여 주는 정렬 예제 하나가 들어 있습니다.
 
-같은 조건에서 세 정렬을 돌리고 **실행 시간 · 비교 횟수 · 이동 횟수 ·
-재귀 깊이** 네 가지를 잰다.
+- 강의 자료: [lec-algorithm.github.io/lecture](https://lec-algorithm.github.io/lecture/)
+- 강의 예제 코드: [lec-algorithm/algorithm-code](https://github.com/lec-algorithm/algorithm-code)
+- 시각화 자료: [lec-algorithm/algorithm-viz](https://github.com/lec-algorithm/algorithm-viz)
 
-| | 정렬 | 수업에서 | 나누기와 결합 |
-| --- | --- | --- | --- |
-| 1 | **병합 정렬** | 배움 | 위치로 나누고, **합칠 때** 일한다 |
-| 2 | **퀵 정렬** | 배움 | 값으로 **나눌 때** 일하고, 결합은 공짜 |
-| 3 | **힙 정렬** | 안 배움 | **나누지도 합치지도 않는다** |
+## 언제 쓰나
 
-강의자료 주제 03이 "나누기와 결합은 시소"라는 틀을 세웠다. 병합과 퀵은 그
-시소의 양 끝이다. 힙은 시소 자체를 거부한다 — 배열 위에 힙이라는 자료구조를
-얹고 최댓값을 반복해 뽑는다. 배우지 않은 정렬로 힙을 고른 이유가 여기 있다.
+이 저장소는 **새 저장소의 출발점**입니다. 상단의 **Use this template**을 눌러
+자기 계정에 사본을 만들고 거기서 작업하세요.
+
+- **과제**를 낼 때
+- **개인프로젝트**를 시작할 때 (수업계획서상 GitHub 저장소 제출이 필수입니다)
+- 알고리즘 코드를 돌려 볼 환경이 필요할 때
+
+수업에서 다루는 예제 코드는 여기가 아니라 `algorithm-code`에 있습니다.
+그쪽은 매주 새 주제가 추가되므로, 복사하지 말고 저장소에서 바로 Codespace를
+만들거나 클론해서 `git pull`로 받으세요.
+
+## 준비물
+
+**GitHub 계정 하나면 됩니다.** 로컬에서 돌리려면 Git과 Docker가 필요합니다.
+컴파일러와 Python은 컨테이너 이미지 안에 들어 있어 따로 설치하지 않습니다.
+
+## 시작하기 (권장): Codespaces
+
+1. 이 저장소 상단의 **Use this template** → **Create a new repository**
+2. 저장소 이름을 정합니다 (예: `algorithms-hw1`, `my-algorithm-project`)
+3. 만들어진 **내 저장소**에서 **Code** → **Codespaces** 탭
+4. **Create codespace on main**
+
+잠시 기다리면 브라우저에 VS Code가 뜹니다. **그 터미널이 곧 컨테이너 안**이므로
+바로 아래 [돌려보기](#돌려보기)로 넘어가면 됩니다.
+
+## 로컬에서 하기
+
+위와 같이 **내 저장소를 먼저 만든 뒤** 그것을 클론합니다.
+
+```sh
+git clone https://github.com/<본인 계정>/<내 저장소>.git
+cd <내 저장소>
+docker compose up -d
+docker compose exec lab bash
+```
+
+처음 한 번은 이미지를 받느라 몇 분 걸립니다. 이후에는 몇 초면 뜹니다.
+**이후 모든 `docker compose` 명령은 이 폴더에서 칩니다.**
+
+VS Code를 쓴다면 Dev Containers 확장의 **Reopen in Container**를 골라도
+됩니다. Codespaces와 같은 설정을 씁니다.
 
 ## 돌려보기
 
-컨테이너 안에서 `make` 한 단어면 된다. 컴파일러와 Python은 이미지에 들어 있다.
+컨테이너 안에서 `make` 한 단어면 됩니다.
+
+- 실행
 
 ```sh
-docker compose up -d
-docker compose exec lab bash
+make run
+```
+
+- 결과
+
+```console
+sorted: 1 2 3 4 5 6 7 8 9 10
+sorted: 1 2 3 4 5 6 7 8 9 10
+```
+
+C와 Python 두 구현이 같은 결과를 냅니다.
+
+## 테스트
+
+- 실행
+
+```sh
 make test
 ```
 
-GitHub의 **Code → Codespaces → Create codespace**로 열면 그 터미널이 곧
-컨테이너 안이므로 위 두 줄은 건너뛰어도 된다.
+- 결과
+
+```console
+ok    섞인 배열
+ok    이미 정렬된 배열
+ok    역순 배열
+ok    중복이 있는 배열
+ok    원소 하나
+ok    빈 배열
+
+6 checks, 0 failures
+...
+Ran 7 tests in 0.001s
+
+OK
+```
+
+테스트가 하나라도 실패하면 `make`가 0이 아닌 코드로 끝납니다. 과제를 내기
+전에 이 명령이 통과하는지 확인하세요.
 
 | 명령 | 하는 일 |
 | --- | --- |
-| `make run` | 이론값 표 · 강의자료 계수 대조 · 안정성 판정 · 측정 표 |
-| `make test` | 유닛 테스트 |
-| `make csv` | 같은 측정을 `report/results.csv`로 저장 |
-| `make charts` | 비교 그래프 6장을 `report/` 아래에 SVG로 생성 |
-| `make debug` | 디버그 심볼을 넣어 빌드 (VS Code의 F5가 쓴다) |
+| `make run` | 예제 실행 (C · Python) |
+| `make test` | 유닛 테스트 (C · Python) |
+| `make run-c` · `make run-py` | 한쪽만 실행 |
+| `make test-c` · `make test-py` | 한쪽만 테스트 |
+| `make debug` | 디버그 심볼을 넣어 빌드 |
 | `make clean` | 빌드 산출물 정리 |
 
-일부만 보고 싶으면 실행 파일에 직접 준다.
+## VS Code에서 실행·디버그
+
+Codespaces나 Dev Containers로 열었다면 편집기에서 바로 됩니다.
+
+| 하고 싶은 것 | 방법 |
+| --- | --- |
+| 파일 하나 실행 | 편집기 오른쪽 위 **▶ 버튼** (Code Runner) |
+| 전체 실행 | `Cmd/Ctrl + Shift + B` (기본 빌드 작업이 `make run`) |
+| 테스트 | 명령 팔레트 → **Tasks: Run Test Task** |
+| C 디버그 | `F5` → **C 디버그 (현재 파일)** |
+| Python 디버그 | `F5` → **Python 디버그 (현재 파일)** |
+
+`F5`를 누르면 빌드가 먼저 돌아 심볼이 있는 바이너리를 만들고 디버거가
+붙습니다. 중단점을 걸고 변수를 들여다볼 수 있습니다.
+
+### 파일 하나만 실행·디버그하기
+
+**C 디버그 (현재 파일)**은 열려 있는 `.c` 파일을 그대로 디버깅합니다. 폴더가
+늘어나도 구성을 새로 만들 필요가 없습니다.
+
+같은 폴더의 `.c`를 함께 링크하므로, 구현이 옆 파일에 있어도 됩니다. 대신
+**한 폴더에 `main`은 하나만** 두세요.
+
+터미널에서 직접 부를 수도 있습니다.
 
 ```sh
-./src/main.out --lecture     # 강의자료 예제 배열로 계수만 맞춰 본다
-./src/main.out --stability   # 안정성 판정만
-./src/main.out --csv         # 측정 결과를 CSV로
+make src/main.debug.out && ./src/main.debug.out
 ```
 
-## 무엇을 재는가
+### ▶ 버튼에 대해
 
-### 네 가지 지표
+편집기 오른쪽 위의 ▶ 버튼은 **Code Runner** 확장이 제공합니다. C든 Python이든
+열려 있는 파일을 그대로 실행합니다.
 
-| 지표 | 왜 재는가 |
-| --- | --- |
-| 실행 시간 (ms) | 최종 성능. 이론 표기가 같아도 갈린다 |
-| 비교 횟수 | 입력 모양에 민감하다 |
-| 이동 횟수 | 병합은 입력에 무감각, 퀵은 극단적으로 변한다 |
-| 재귀 깊이 | 퀵의 최악을 한 열로 드러낸다. 스택 사용량과 1:1 |
+두 확장이 각각 ▶ 버튼을 내놓으면 헷갈리므로, C/C++ 확장 쪽은 꺼 두었습니다
+(`C_Cpp.debugShortcut`). 그쪽 버튼은 **파일 하나만** 컴파일해서 이런 오류를
+냅니다.
 
-세 정렬 모두 한 층에서 하는 일이 대략 n으로 같다. 그래서 시간 차이는 결국
-**층수**, 곧 재귀 깊이에서 나온다. 깊이 열을 시간 열 옆에 두면 "왜 느려졌는가"
-까지 한 표에서 보인다.
+```console
+undefined reference to `bubbleSort'
+collect2: error: ld returned 1 exit status
+```
 
-### 계수 규약
+Code Runner도 기본 설정 그대로면 같은 문제가 나고, Python은 이미지에 없는
+`python`을 찾습니다. 그래서 `.vscode/settings.json`에서 두 가지를 고쳐
+두었습니다.
 
-강의자료(주제 03·04)의 계수 방식에 맞췄다. 이걸 지켜야 강의에 찍힌 숫자가
-재현되고, 그게 구현이 옳다는 증거가 된다.
+- C는 `Makefile`의 `%.out` 규칙을 거쳐 **같은 폴더의 `.c`를 함께** 빌드합니다
+- Python은 `python3`로 실행합니다
+- 출력 패널이 아니라 **터미널**에서 돌립니다. 그래야 `scanf`나 `input()`이 멈추지 않습니다
 
-- 대입 1회 = **이동 1회**
-- 교환 1회 = **이동 3회** (`tmp=a[i]; a[i]=a[j]; a[j]=tmp` 세 번의 대입)
-- 제자리 교환(`i == j`)은 **세지 않는다** — 아무것도 옮기지 않으므로
-
-세 번째가 없으면 "퀵은 정렬된 입력에서 이동 0회"라는 강의자료의 결과가
-재현되지 않는다.
-
-### 입력 네 모양
-
-`random`(평균) · `sorted`(맨 앞 피벗 퀵의 최악) · `reversed` ·
-`few-unique`(값 8종, 안정성을 가릴 수 있는 유일한 입력). 이론표의
-최선·평균·최악 칸을 실험으로 만들어 내는 장치다.
-
-`n = 8192`는 **2의 거듭제곱**이라 병합이 바닥까지 정확히 반씩 갈린다. 그래서
-실측이 이론값과 자릿수까지 맞는다.
-
-| 항목 | 공식 | 값 |
-| --- | --- | --- |
-| 병합 이동 (모든 입력) | 2n·log₂n | 212,992 |
-| 병합 비교 (정렬된 입력) | n·log₂n / 2 | 53,248 |
-| 퀵 비교 (정렬·역순) | n(n−1)/2 | 33,550,336 |
-| 퀵 재귀 깊이 (정렬·역순) | n | 8,192 |
-| 힙 재귀 깊이 (전부) | 1 | 1 |
-
-## 코드 구조
+## 저장소 구조
 
 ```plaintext
-main.c ─── 계획표: 무엇을 몇 개로 잴지만 적는다
-   │       (정렬 이름이 한 번도 안 나온다)
-   ↓
-bench.c ── 재는 사람: 입력 생성 · 시간 측정
-   │       (어떤 정렬인지 모른다)
-   ↓
-sort.h ─── 약속: 이름 · 측정값 · 정렬 함수의 모양
-   │       (설계의 중심. 이것만 지키면 위아래가 서로 몰라도 된다)
-   ↓
-mergeSort.c   quickSort.c   heapSort.c
-(위치로 나눔)  (값으로 나눔)  (나누지 않음)
-   │             │             │
-   └─────────────┴─────────────┘
-                 ↓
-            sort.c ─── 명단: 세 정렬을 한 표에 등록
+algorithm-env/
+├── .devcontainer/devcontainer.json  # Codespaces · Dev Containers 설정
+├── compose.yml                      # 실습 컨테이너 (서비스 이름: lab)
+├── Dockerfile                       # gcc · gdb · make · python3 · git
+├── .vscode/                         # 빌드·디버그 설정 (F5, Cmd+Shift+B)
+├── Makefile                         # run · test · debug · clean
+├── src/
+│   ├── sort.h · sort.c              # C 구현
+│   ├── main.c                       # C 실행 예제
+│   ├── sort.py                      # Python 구현
+│   └── main.py                      # Python 실행 예제
+└── tests/
+    ├── test_sort.c                  # C 유닛 테스트 (표준 C만 사용)
+    └── test_sort.py                 # Python 유닛 테스트 (unittest)
 ```
-
-```plaintext
-src/     sort.h · sort.c · mergeSort.c · quickSort.c · heapSort.c
-         bench.h · bench.c · main.c
-tests/   test_sort.c
-tools/   plot.py      그래프 생성 (표준 모듈만)
-report/  results.csv · *.svg   (make csv · make charts가 만든다)
-```
-
-**설계 목표는 하나 — 세 정렬이 완전히 똑같은 조건에서 측정되게 하는 것.**
-조건이 조금이라도 다르면 비교가 무의미해진다. 그래서 각 층이 옆 층을 모르도록
-떼어 놓았다. `main.c`와 `tests/test_sort.c`는 정렬 이름을 적지 않고
-`SORT_ALGORITHMS` 표를 훑는다. 정렬을 하나 더 넣으면 그 표에 한 줄 더하는
-것으로 끝난다.
-
-공정성을 위해 `bench.c`가 지키는 것 둘:
-
-- 배열 **복사 시간은 시계 밖에서** 잰다
-- 같은 측정을 **5회 반복해 평균**을 낸다
-
-세 구현은 모두 **교과서 형태를 유지한다.** 최적화하지 않는다. 강의 코드와
-같은 모양이라야 비교 검증이 되고, 특히 퀵의 **맨 앞 피벗**은 일부러 그대로
-둔다 — 정렬된 입력에서 O(n²)이 되는 그 최악을 재는 것이 이 과제의 목적 중
-하나다.
 
 ## 규약
 
-- **외부 라이브러리를 쓰지 않는다.** C는 표준 라이브러리만, Python은 표준
-  모듈만. 테스트도 프레임워크 없이 직접 쓴다.
-- **실행 파일은 `*.out`으로 만든다.** `.gitignore`가 그것만 걸러낸다.
-- **실행 수단은 전부 `Makefile`을 거친다.** VS Code의 ▶ 버튼,
-  `Cmd/Ctrl + Shift + B`, `F5` 모두 마찬가지다.
-- **컴파일 경고 없이 빌드된다.** `CFLAGS`에 `-Wall -Wextra`가 켜져 있다.
-- 새 작업은 `develop`에서 `feature/*` 브랜치로 시작하고 `main`에 직접
-  커밋하지 않는다. 커밋 전에 `make test`가 통과해야 한다.
+- **실행 파일은 `*.out`으로 만듭니다.** `.gitignore`가 `*.out`만 걸러내므로,
+  컨테이너에서 컴파일한 Linux 바이너리가 커밋에 섞이지 않습니다.
+- **외부 라이브러리를 쓰지 않습니다.** C는 표준 라이브러리만, Python은 표준
+  모듈만 씁니다. C 테스트도 프레임워크 없이 `assert` 수준으로 직접 씁니다.
+- **C와 Python은 같은 알고리즘을 같은 이름의 함수로 구현합니다.** 언어 차이가
+  알고리즘 차이로 보이지 않게 합니다.
+- 파일명은 각 언어의 관례를 따릅니다. C는 camelCase(`bubbleSort`), Python은
+  snake_case(`bubble_sort`)입니다.
 
-Python은 이 프로젝트에서 **그래프 도구(`tools/plot.py`)에만** 쓴다. 정렬
-세 개를 두 언어로 여섯 번 구현하는 것은 과제의 취지가 아니라고 보고, 강의
-샘플 저장소가 `run-py`·`test-py` 타겟을 뺀 선례를 따랐다.
+## 자기 코드로 바꾸기
 
-이 저장소는 [lec-algorithm/algorithm-env](https://github.com/lec-algorithm/algorithm-env)
-template에서 시작했다.
+`src`의 버블 정렬은 환경이 도는지 보여 주는 예제일 뿐입니다. 지우고 자기
+코드를 넣으세요. `tests`도 마찬가지입니다. 뼈대(`Makefile`, `src`, `tests`,
+컨테이너 설정)만 남기면 됩니다.
+
+## 변경 기록
+
+버전과 변경 내역은 [CHANGELOG.md](CHANGELOG.md)에 있습니다.
+
+## 정리
+
+```sh
+docker compose down
+```
+
+컨테이너를 지워도 코드는 그대로 남습니다.
