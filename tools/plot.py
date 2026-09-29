@@ -8,12 +8,12 @@
     make charts        (= make csv 뒤에 python3 tools/plot.py)
 
 만드는 파일 (report/ 아래)
-    growth-time.svg          n을 키울 때 실행 시간 (로그-로그)
-    growth-compares.svg      n을 키울 때 비교 횟수 (로그-로그)
-    shapes-time.svg          입력 모양별 실행 시간
-    shapes-compares.svg      입력 모양별 비교 횟수
-    shapes-moves.svg         입력 모양별 이동 횟수
-    shapes-depth.svg         입력 모양별 재귀 깊이
+    growth-time.svg              n을 키울 때 실행 시간 (로그-로그)
+    growth-compares.svg          n을 키울 때 비교 횟수 (로그-로그)
+    shapes-time.svg              입력 모양별 실행 시간 (로그)
+    shapes-compares.svg          입력 모양별 비교 횟수 (로그)
+    shapes-compares-linear.svg   같은 자료를 선형 축으로
+    shapes-moves.svg             입력 모양별 이동 횟수 (선형)
 """
 
 import csv
@@ -315,16 +315,15 @@ def main():
     bar_chart(rows, "millis", "입력 모양별 실행 시간" + at, "시간 (ms)",
               "shapes-time.svg", logscale=True)
 
-    # 비교와 깊이는 두 벌씩. 퀵의 최악이 얼마나 압도적인지는 선형에서만 보이고,
+    # 비교 횟수만 두 벌. 퀵의 최악이 얼마나 압도적인지는 선형에서만 보이고,
     # 나머지 둘을 서로 견주는 것은 로그에서만 된다.
     bar_chart(rows, "compares", "입력 모양별 비교 횟수" + at + " — 선형 축",
               "비교 횟수", "shapes-compares-linear.svg")
     bar_chart(rows, "compares", "입력 모양별 비교 횟수" + at + " — 로그 축",
               "비교 횟수", "shapes-compares.svg", logscale=True)
-    bar_chart(rows, "depth", "입력 모양별 재귀 깊이" + at + " — 선형 축",
-              "재귀 깊이", "shapes-depth-linear.svg")
-    bar_chart(rows, "depth", "입력 모양별 재귀 깊이" + at + " — 로그 축",
-              "재귀 깊이", "shapes-depth.svg", logscale=True)
+
+    # 재귀 깊이는 그리지 않는다. 입력 모양별로 값이 1 · 14 · 8192 세 가지뿐이라
+    # 막대로 옮겨도 표보다 읽히는 것이 없다.
 
     # 이동은 선형만. 값의 범위가 좁아 로그가 필요 없고, 무엇보다 퀵이 정렬된
     # 입력에서 기록하는 0회를 로그 축에는 그릴 자리가 없다.
