@@ -40,16 +40,16 @@ typedef struct Spec {
  * n = 8192면 호출 스택이 약 512KB로 기본 한도(8MB)에 한참 못 미치고, 최악
  * 한 회차가 십여 ms라 반복 측정에도 부담이 없다. */
 static const Spec SPECS[] = {
-    {"kinds", INPUT_RANDOM, 8192, 5},
-    {"kinds", INPUT_SORTED, 8192, 5},
-    {"kinds", INPUT_REVERSED, 8192, 5},
-    {"kinds", INPUT_FEW_UNIQUE, 8192, 5},
-    {"growth", INPUT_RANDOM, 2048, 5},
-    {"growth", INPUT_RANDOM, 4096, 5},
-    {"growth", INPUT_RANDOM, 8192, 5},
-    {"growth", INPUT_RANDOM, 16384, 5},
-    {"growth", INPUT_RANDOM, 32768, 5},
-    {"growth", INPUT_RANDOM, 65536, 5},
+    {"kinds", INPUT_RANDOM, 8192, 15},
+    {"kinds", INPUT_SORTED, 8192, 15},
+    {"kinds", INPUT_REVERSED, 8192, 15},
+    {"kinds", INPUT_FEW_UNIQUE, 8192, 15},
+    {"growth", INPUT_RANDOM, 2048, 15},
+    {"growth", INPUT_RANDOM, 4096, 15},
+    {"growth", INPUT_RANDOM, 8192, 15},
+    {"growth", INPUT_RANDOM, 16384, 15},
+    {"growth", INPUT_RANDOM, 32768, 15},
+    {"growth", INPUT_RANDOM, 65536, 15},
 };
 
 static const size_t SPEC_COUNT = sizeof(SPECS) / sizeof(SPECS[0]);
