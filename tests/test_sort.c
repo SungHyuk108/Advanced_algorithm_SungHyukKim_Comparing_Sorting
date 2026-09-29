@@ -177,6 +177,17 @@ static void testDepth(void) {
         check(st.maxDepth >= n / 2, what);
     }
 
+    /* 힙은 재귀를 아예 쓰지 않는다. siftDown이 아래로만 내려가는 반복문이라
+     * 되돌아올 자리를 기억할 필요가 없다. */
+    makeInput(a, n, INPUT_SORTED, 1u);
+    sortStatsReset(&st);
+    heapSort(a, n, &st);
+    {
+        char what[128];
+        snprintf(what, sizeof(what), "heap: 반복문이라 깊이 1 (측정 %zu)", st.maxDepth);
+        check(st.maxDepth == 1, what);
+    }
+
     free(a);
 }
 
