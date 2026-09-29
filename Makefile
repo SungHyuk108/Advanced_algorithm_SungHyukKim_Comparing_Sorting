@@ -1,8 +1,9 @@
 # 빌드와 테스트를 한 단어로 돌리기 위한 Makefile.
 # 컨테이너 안에서 실행한다 (docker compose exec lab bash).
 #
-#   make run     비교 결과 출력
+#   make run     비교 표 출력
 #   make test    유닛 테스트
+#   make csv     측정 결과를 report/results.csv 로 저장
 #   make debug   디버그 심볼을 넣어 빌드 (VS Code의 F5가 쓴다)
 #   make clean   빌드 산출물 정리
 #
@@ -14,7 +15,7 @@ CFLAGS ?= -std=c17 -Wall -Wextra -O2
 # `-I`는 아래 패턴 규칙이 대상 파일의 폴더로 붙인다. 여기서 고정하지 않는다.
 DEBUGFLAGS ?= -std=c17 -Wall -Wextra -g -O0
 
-.PHONY: all run run-c test test-c debug clean
+.PHONY: all run run-c test test-c csv debug clean
 
 all: test
 
@@ -27,6 +28,11 @@ test: test-c
 
 test-c: tests/test_sort.out
 	@./tests/test_sort.out
+
+csv: src/main.out
+	@mkdir -p report
+	@./src/main.out --csv > report/results.csv
+	@echo "report/results.csv 저장됨"
 
 debug: src/main.debug.out
 
