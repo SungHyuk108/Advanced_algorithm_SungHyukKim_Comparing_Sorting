@@ -30,14 +30,15 @@ void makeInput(Record *a, size_t n, InputKind kind, unsigned seed);
 typedef struct BenchResult {
     const SortAlgorithm *algo;
     size_t n;
-    double millis;   /* 한 번 도는 데 걸린 시간 (reps회 평균) */
+    double millis;   /* 한 번 도는 데 걸린 시간 (reps회 중 가장 빠른 회차) */
     SortStats stats; /* 마지막 회차의 측정값 */
     int sorted;      /* 결과가 정렬됐는가 — 측정값을 보기 전에 이것부터 본다 */
     int stable;      /* 실제로 안정했는가 (구현 표의 주장이 아니라 실측) */
     int judgeable;   /* 입력에 중복 key가 있어 안정성을 가릴 수 있는가 */
 } BenchResult;
 
-/* input을 복사해 reps번 정렬하고 평균 시간을 남긴다. 복사 시간은 빼고 잰다. */
+/* input을 복사해 reps번 정렬하고 가장 빠른 회차의 시간을 남긴다.
+ * 복사 시간은 빼고 재며, 재기 전에 워밍업을 한 회 돌린다. */
 BenchResult benchRun(const SortAlgorithm *algo, const Record *input, size_t n, int reps);
 
 #endif /* BENCH_H */
