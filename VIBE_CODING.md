@@ -178,7 +178,7 @@ report/  results.csv · *.svg    (make csv · make charts가 만든다)
 | `make run` | 이론값 표 · 강의자료 계수 대조 · 안정성 판정 · 측정 표 |
 | `make test` | 유닛 테스트 |
 | `make csv` | 같은 측정을 `report/results.csv`로 저장 |
-| `make charts` | 비교 그래프 6장을 `report/` 아래에 SVG로 생성 |
+| `make charts` | 비교 그래프를 `report/` 아래에 SVG로 생성 |
 
 일부만 보고 싶으면 실행 파일에 직접 준다.
 
@@ -238,7 +238,7 @@ report/  results.csv · *.svg    (make csv · make charts가 만든다)
 | 3 | Add quick sort with a deliberate front pivot | 퀵 (맨 앞 피벗을 일부러 유지) |
 | 4 | Add heap sort with an iterative sift-down | 힙 (반복문 → 깊이 1) |
 | 5 | Report the measurements as tables, CSV and stability trials | `main.c` — 표·CSV·안정성 200시드 |
-| 6 | Draw comparison charts without external libraries | `tools/plot.py` — SVG 6장 |
+| 6 | Draw comparison charts without external libraries | `tools/plot.py` — SVG 그래프 |
 | 7 | Fix the depth bound stated in the merge sort test comment | 주석과 단언이 어긋난 것 |
 
 ### 템플릿에서 뺀 것
