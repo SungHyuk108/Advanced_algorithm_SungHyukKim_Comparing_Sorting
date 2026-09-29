@@ -39,6 +39,7 @@ typedef struct SortAlgorithm {
 } SortAlgorithm;
 
 void mergeSort(Record *a, size_t n, SortStats *st);
+void quickSort(Record *a, size_t n, SortStats *st);
 
 extern const SortAlgorithm SORT_ALGORITHMS[];
 extern const size_t SORT_ALGORITHM_COUNT;

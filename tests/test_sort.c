@@ -165,6 +165,18 @@ static void testDepth(void) {
         check(st.maxDepth <= 12, what);
     }
 
+    /* 퀵은 반대다. 맨 앞 피벗이 정렬된 입력에서 매번 최솟값을 고르므로
+     * 구간이 한 칸씩만 줄고, 깊이가 n까지 자란다. */
+    makeInput(a, n, INPUT_SORTED, 1u);
+    sortStatsReset(&st);
+    quickSort(a, n, &st);
+    {
+        char what[128];
+        snprintf(what, sizeof(what), "quick: 정렬된 입력에서 깊이가 n까지 자람 (측정 %zu)",
+                 st.maxDepth);
+        check(st.maxDepth >= n / 2, what);
+    }
+
     free(a);
 }
 
@@ -207,6 +219,7 @@ static void testLectureCounts(void) {
         size_t moves;
     } EXPECTED[] = {
         {"merge", 22, 68},
+        {"quick", 25, 21},
     };
     const size_t count = sizeof(EXPECTED) / sizeof(EXPECTED[0]);
 
