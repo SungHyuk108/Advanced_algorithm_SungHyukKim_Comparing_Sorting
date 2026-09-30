@@ -1,20 +1,43 @@
+/* 구현을 담은 표와 공용 헬퍼. 이 파일에는 알고리즘이 없다. */
 #include "sort.h"
 
-void bubbleSort(int a[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        int swapped = 0;
-        /* 한 번 훑을 때마다 가장 큰 값이 뒤로 밀려 자리를 잡는다. */
-        for (int j = 0; j < n - 1 - i; j++) {
-            if (a[j] > a[j + 1]) {
-                int tmp = a[j];
-                a[j] = a[j + 1];
-                a[j + 1] = tmp;
-                swapped = 1;
-            }
-        }
-        /* 한 바퀴 동안 교환이 없었다면 이미 정렬된 것이다. */
-        if (!swapped) {
-            return;
+const SortAlgorithm SORT_ALGORITHMS[] = {
+    {"merge", "O(n log n)", "O(n log n)", "O(n log n)", "O(n)", 1, mergeSort},
+    {"quick", "O(n log n)", "O(n log n)", "O(n^2)", "O(log n)", 0, quickSort},
+    {"heap", "O(n log n)", "O(n log n)", "O(n log n)", "O(1)", 0, heapSort},
+};
+
+const size_t SORT_ALGORITHM_COUNT = sizeof(SORT_ALGORITHMS) / sizeof(SORT_ALGORITHMS[0]);
+
+void sortStatsReset(SortStats *st) {
+    st->compares = 0;
+    st->moves = 0;
+    st->maxDepth = 0;
+}
+
+int recordsSorted(const Record *a, size_t n) {
+    for (size_t i = 1; i < n; i++) {
+        if (a[i - 1].key > a[i].key) {
+            return 0;
         }
     }
+    return 1;
+}
+
+int recordsStable(const Record *a, size_t n) {
+    for (size_t i = 1; i < n; i++) {
+        if (a[i - 1].key == a[i].key && a[i - 1].tag > a[i].tag) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int recordsHaveDuplicates(const Record *a, size_t n) {
+    for (size_t i = 1; i < n; i++) {
+        if (a[i - 1].key == a[i].key) {
+            return 1;
+        }
+    }
+    return 0;
 }
