@@ -109,18 +109,18 @@ const SortAlgorithm SORT_ALGORITHMS[] = {
 #### 층 구조
 
 ```mermaid
-flowchart TD
-    main["main.c<br/>계획표 — 무엇을 몇 개로 잴지만 적는다"]
-    bench["bench.c<br/>재는 사람 — 입력 생성 · 시간 측정"]
-    sorth["sort.h<br/>약속 — 이름 · 측정값 · 정렬 함수의 모양"]
-    sortc["sort.c<br/>명단 — SORT_ALGORITHMS 표"]
-    ms["mergeSort.c<br/>위치로 나눔"]
-    qs["quickSort.c<br/>값으로 나눔"]
-    hs["heapSort.c<br/>나누지 않음"]
+flowchart LR
+    main["main.c<br/>무엇을 잴지만 적는다"]
+    bench["bench.c<br/>입력 생성 · 시간 측정"]
+    sorth["sort.h<br/>공통 인터페이스"]
+    sortc["sort.c<br/>구현 표"]
+    ms["mergeSort.c"]
+    qs["quickSort.c"]
+    hs["heapSort.c"]
 
     main -->|"표를 훑는다"| sortc
     main --> bench
-    bench -->|"SortAlgorithm 만 안다"| sorth
+    bench --> sorth
     sortc --> sorth
     ms --> sorth
     qs --> sorth
@@ -187,7 +187,7 @@ C에서 파일 단위로 무언가를 감추는 방법이 이것이라는 것을
 대소를 비교하여 정렬한다.
 
 ```mermaid
-flowchart TD
+flowchart LR
     A["구간 하나"] --> B{"원소가 1개인가?"}
     B -->|"예"| Z["이미 정렬 — 돌아간다"]
     B -->|"아니오"| C["가운데에서 반으로 자른다<br/>비교 0 · 이동 0"]
@@ -231,13 +231,13 @@ if (a[i].key <= a[j].key) {   /* '<' 이면 같은 값일 때 오른쪽이 먼�
 `O(n log n)`이라고 볼 수 있다.
 
 ```mermaid
-flowchart TD
-    A["구간 하나"] --> B["맨 앞 원소를 피벗으로 잡는다"]
-    B --> C["나머지를 훑으며 피벗보다 작은 것을<br/>왼쪽으로 모은다 — 여기서 일한다"]
-    C --> D["피벗을 그 경계로 데려온다<br/>— 피벗의 자리가 확정된다"]
-    D --> L["왼쪽(작은 것들)을 같은 방법으로"]
-    D --> R["오른쪽(큰 것들)을 같은 방법으로"]
-    L --> Z["결합 없음<br/>— 돌아와서 할 일이 없다"]
+flowchart LR
+    A["구간 하나"] --> B["맨 앞을<br/>피벗으로 잡는다"]
+    B --> C["피벗보다 작은 것을<br/>왼쪽으로 모은다<br/>— 여기서 일한다"]
+    C --> D["피벗을 그 경계로<br/>데려온다"]
+    D --> L["왼쪽을<br/>같은 방법으로"]
+    D --> R["오른쪽을<br/>같은 방법으로"]
+    L --> Z["결합 없음"]
     R --> Z
 ```
 
@@ -342,7 +342,7 @@ flowchart LR
 자식 중 더 큰 것과 자리를 바꾸고, 이것이 성립하지 않을 때까지 지속**한다.
 
 ```mermaid
-flowchart TD
+flowchart LR
     S["내려보낼 자리 root"] --> C{"자식이 있는가?"}
     C -->|"없다"| Z["끝 — 바닥에 닿았다"]
     C -->|"있다"| P["자식이 둘이면 더 큰 쪽을 고른다"]
@@ -535,7 +535,7 @@ flowchart TD
 메모리**와 **재귀 호출 스택** 두 가지 요소가 주요하게 작용한다.
 
 ```mermaid
-flowchart TD
+flowchart LR
     A["추가로 쓰는 공간"] --> B["① 명시적으로 잡는 메모리<br/>데이터를 담을 곳"]
     A --> C["② 재귀 호출 스택<br/>어디까지 했는지 기억할 곳"]
     B -.->|"병합의 temp 배열"| D["O(n)"]
